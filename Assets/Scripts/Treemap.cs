@@ -9,71 +9,60 @@ using System.Linq;
 
 public class Treemap {
 
-	public Slice<T> GetSlice<T>(IEnumerable<Element<T>> elements, float totalSize, 
-		float sliceWidth)
-	{
-		if (!elements.Any()) return null;
-		if (elements.Count() == 1) return new Slice<T> 
-		{ Elements = elements, Size = totalSize };
+	public Slice<T> GetSlice<T>(IEnumerable<Element<T>> elements, float totalSize, float sliceWidth) {                 
+		if (!elements.Any()) 
+			return null;
+		if (elements.Count() == 1) 
+			return new Slice<T> { Elements = elements, Size = totalSize };
 
 		var sliceResult = GetElementsForSlice(elements, sliceWidth);
 
-		return new Slice<T>
-		{
+		return new Slice<T> {
 			Elements = elements,
 			Size = totalSize,
-			SubSlices = new[]
-			{ 
+			SubSlices = new[] { 
 				GetSlice(sliceResult.Elements, sliceResult.ElementsSize, sliceWidth),
-				GetSlice(sliceResult.RemainingElements, 1 - sliceResult.ElementsSize, 
-					sliceWidth)
+				GetSlice(sliceResult.RemainingElements, 1 - sliceResult.ElementsSize, sliceWidth)
 			}
 		};
 	}
 
-	private SliceResult<T> GetElementsForSlice<T>(IEnumerable<Element<T>> elements,
-		float sliceWidth)
-	{
+	private SliceResult<T> GetElementsForSlice<T>(IEnumerable<Element<T>> elements,	float sliceWidth) {
 		var elementsInSlice = new List<Element<T>>();
 		var remainingElements = new List<Element<T>>();
 		float current = 0;
 		float total = elements.Sum(x => x.Value);
 
-		foreach (var element in elements)
-		{
-			if (current > sliceWidth)
+		foreach (var element in elements) {
+			if (current > sliceWidth) {
 				remainingElements.Add(element);
-			else
-			{
+			}
+			else {
 				elementsInSlice.Add(element);
 				current += element.Value / total;
 			}
 		}
 
-		return new SliceResult<T> 
-		{ 
+		return new SliceResult<T> { 
 			Elements = elementsInSlice, 
 			ElementsSize = current,
 			RemainingElements = remainingElements
 		};
 	}
 
-	public class SliceResult<T>
-	{
+	public class SliceResult<T> {
 		public IEnumerable<Element<T>> Elements { get; set; }
 		public float ElementsSize { get; set; }
 		public IEnumerable<Element<T>> RemainingElements { get; set; }
 	}
 
-	public class Slice<T>
-	{
+	public class Slice<T> {
 		public float Size { get; set; }
 		public IEnumerable<Element<T>> Elements { get; set; }
 		public IEnumerable<Slice<T>> SubSlices { get; set; }
 	}
 
-	public class Element<T>
-	{
+	public class Element<T> {
 		public T Object { get; set; }
 		public float Value { get; set; }
 	}
@@ -81,14 +70,10 @@ public class Treemap {
 
 	// Generating rectangles using leaf slice (slice with only one element in it)
 
-	public IEnumerable<SliceRectangle<T>> GetRectangles<T>(Slice<T> slice, int width, 
-		int height)
-	{
-		var area = new SliceRectangle<T>
-		{ Slice = slice, Width = width, Height = height };
+	public IEnumerable<SliceRectangle<T>> GetRectangles<T>(Slice<T> slice, int width, int height) {
+		var area = new SliceRectangle<T> { Slice = slice, Width = width, Height = height };
 
-		foreach (var rect in GetRectangles(area))
-		{
+		foreach (var rect in GetRectangles(area)) {
 			// Make sure no rectangle go outside the original area
 			if (rect.X + rect.Width > area.Width) rect.Width = area.Width - rect.X;
 			if (rect.Y + rect.Height > area.Height) rect.Height = area.Height - rect.Y;
@@ -97,26 +82,21 @@ public class Treemap {
 		}
 	}
 
-	private IEnumerable<SliceRectangle<T>> GetRectangles<T>(
-		SliceRectangle<T> sliceRectangle)
-	{
+	private IEnumerable<SliceRectangle<T>> GetRectangles<T>(SliceRectangle<T> sliceRectangle) {
 		var isHorizontalSplit = sliceRectangle.Width >= sliceRectangle.Height;
 		var currentPos = 0;
-		foreach (var subSlice in sliceRectangle.Slice.SubSlices)
-		{
+		foreach (var subSlice in sliceRectangle.Slice.SubSlices) {
 			var subRect = new SliceRectangle<T> { Slice = subSlice };
 			int rectSize;
 
-			if (isHorizontalSplit)
-			{
+			if (isHorizontalSplit) {
 				rectSize = (int)Mathf.Round(sliceRectangle.Width * subSlice.Size);
 				subRect.X = sliceRectangle.X + currentPos;
 				subRect.Y = sliceRectangle.Y;
 				subRect.Width = rectSize;
 				subRect.Height = sliceRectangle.Height;
 			}
-			else
-			{
+			else {
 				rectSize = (int)Mathf.Round(sliceRectangle.Height * subSlice.Size);
 				subRect.X = sliceRectangle.X;
 				subRect.Y = sliceRectangle.Y + currentPos;
@@ -126,18 +106,17 @@ public class Treemap {
 
 			currentPos += rectSize;
 
-			if (subSlice.Elements.Count() > 1)
-			{
+			if (subSlice.Elements.Count() > 1) {
 				foreach (var sr in GetRectangles(subRect))
 					yield return sr;
 			}
-			else if (subSlice.Elements.Count() == 1)
+			else if (subSlice.Elements.Count() == 1) {
 				yield return subRect;
+			}
 		}
 	}
 
-	public class SliceRectangle<T>
-	{
+	public class SliceRectangle<T> {
 		public Slice<T> Slice { get; set; }
 		public int X { get; set; }
 		public int Y { get; set; }
@@ -148,9 +127,7 @@ public class Treemap {
 
 	// Drawing the rectangles in WinForm
 
-	public void DrawTreemap<T>(IEnumerable<SliceRectangle<T>> rectangles, int width, 
-		int height)
-	{
+	public void DrawTreemap<T>(IEnumerable<SliceRectangle<T>> rectangles, int width,  int height) {
 //		var font = new Font("Arial", 8 );
 
 //		var bmp = new Bitmap(width, height);
@@ -176,8 +153,7 @@ public class Treemap {
 
 	// And finally to generate a Treemap in LinqPad
 
-	void Start()
-	{
+	void Start() {
 		const int Width = 400;
 		const int Height = 300;
 		const float MinSliceRatio = 0.35f;
@@ -194,5 +170,4 @@ public class Treemap {
 
 		DrawTreemap(rectangles, Width, Height);
 	}
-
 }
