@@ -7,7 +7,7 @@ using System.Linq;
 
 // Slice calculation
 
-public class Treemap {
+public class Treemap : MonoBehaviour {
 
 	public Slice<T> GetSlice<T>(IEnumerable<Element<T>> elements, float totalSize, float sliceWidth) {                 
 		if (!elements.Any()) 
@@ -154,6 +154,8 @@ public class Treemap {
 	// And finally to generate a Treemap in LinqPad
 
 	void Start() {
+		Debug.Log("Start Treemap");
+
 		const int Width = 400;
 		const int Height = 300;
 		const float MinSliceRatio = 0.35f;
@@ -167,6 +169,7 @@ public class Treemap {
 
 		var rectangles = GetRectangles(slice, Width, Height)
 			.ToList();//.Dump("Rectangles");
+		Debug.Log(rectangles.Count);
 
 		DrawTreemap(rectangles, Width, Height);
 	}
