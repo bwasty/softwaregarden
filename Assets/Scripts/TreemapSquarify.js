@@ -1,4 +1,6 @@
 ﻿/*
+ * Adaptation of https://github.com/imranghory/treemap-squared/ for use in Unity3D. Original header:
+ *
  * treemap-squarify.js - open source implementation of squarified treemaps
  *
  * Treemap Squared 0.5 - Treemap Charting library 
@@ -26,70 +28,88 @@
  * See the README file for more details.
  */
 
-var Treemap = {};
+#pragma strict
 
-(function() {
-    "use strict";
-    Treemap.generate = function(){
+// sumArray - sums a single dimensional array 
+static function sumArray(arr : float[]) {
+    var sum = 0;
+    var i : int;
 
-        function Container(xoffset, yoffset, width, height) {
-            this.xoffset = xoffset; // offset from the the top left hand corner
-            this.yoffset = yoffset; // ditto 
-            this.height = height;
-            this.width = width;
+    for (i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+    return sum;
+};
 
-            this.shortestEdge = function () {
-                return Math.min(this.height, this.width);
-            };
 
-            // getCoordinates - for a row of boxes which we've placed 
-            //                  return an array of their cartesian coordinates
-            this.getCoordinates = function (row) {
-                var coordinates = [];
-                var subxoffset = this.xoffset, subyoffset = this.yoffset; //our offset within the container
-                var areawidth = sumArray(row) / this.height;
-                var areaheight = sumArray(row) / this.width;
-                var i;
+class Container {
+	var xoffset : float;
+	var yoffset : float;
+	var height : float;
+	var width : float;
 
-                if (this.width >= this.height) {
-                    for (i = 0; i < row.length; i++) {
-                        coordinates.push([subxoffset, subyoffset, subxoffset + areawidth, subyoffset + row[i] / areawidth]);
-                        subyoffset = subyoffset + row[i] / areawidth;
-                    }
-                } else {
-                    for (i = 0; i < row.length; i++) {
-                        coordinates.push([subxoffset, subyoffset, subxoffset + row[i] / areaheight, subyoffset + areaheight]);
-                        subxoffset = subxoffset + row[i] / areaheight;
-                    }
-                }
-                return coordinates;
-            };
+	function Container(xoffset, yoffset, width, height) {
+        this.xoffset = xoffset; // offset from the the top left hand corner
+        this.yoffset = yoffset; // ditto 
+        this.height = height;
+        this.width = width;
+	}
 
-            // cutArea - once we've placed some boxes into an row we then need to identify the remaining area, 
-            //           this function takes the area of the boxes we've placed and calculates the location and
-            //           dimensions of the remaining space and returns a container box defined by the remaining area
-            this.cutArea = function (area) {
-                var newcontainer;
+    function shortestEdge() {
+        return Mathf.Min(this.height, this.width);
+    };
 
-                if (this.width >= this.height) {
-                    var areawidth = area / this.height;
-                    var newwidth = this.width - areawidth;
-                    newcontainer = new Container(this.xoffset + areawidth, this.yoffset, newwidth, this.height);
-                } else {
-                    var areaheight = area / this.width;
-                    var newheight = this.height - areaheight;
-                    newcontainer = new Container(this.xoffset, this.yoffset + areaheight, this.width, newheight);
-                }
-                return newcontainer;
-            };
+
+    // getCoordinates - for a row of boxes which we've placed 
+    //                  return an array of their cartesian coordinates
+    function getCoordinates(row : Array) {
+        var coordinates = [];
+        var subxoffset = this.xoffset;
+        var subyoffset = this.yoffset; //our offset within the container
+        var areawidth = TreemapSquarify.sumArray(row) / this.height;
+        var areaheight = TreemapSquarify.sumArray(row) / this.width;
+        var i;
+
+        if (this.width >= this.height) {
+            for (i = 0; i < row.length; i++) {
+                coordinates.push([subxoffset, subyoffset, subxoffset + areawidth, subyoffset + row[i] / areawidth]);
+                subyoffset = subyoffset + row[i] / areawidth;
+            }
+        } else {
+            for (i = 0; i < row.length; i++) {
+                coordinates.push([subxoffset, subyoffset, subxoffset + row[i] / areaheight, subyoffset + areaheight]);
+                subxoffset = subxoffset + row[i] / areaheight;
+            }
         }
+        return coordinates;
+    };
 
+    // cutArea - once we've placed some boxes into an row we then need to identify the remaining area, 
+    //           this function takes the area of the boxes we've placed and calculates the location and
+    //           dimensions of the remaining space and returns a container box defined by the remaining area
+    function cutArea(area) {
+        var newcontainer;
 
+        if (this.width >= this.height) {
+            var areawidth = area / this.height;
+            var newwidth = this.width - areawidth;
+            newcontainer = new Container(this.xoffset + areawidth, this.yoffset, newwidth, this.height);
+        } else {
+            var areaheight = area / this.width;
+            var newheight = this.height - areaheight;
+            newcontainer = new Container(this.xoffset, this.yoffset + areaheight, this.width, newheight);
+        }
+        return newcontainer;
+    };
 
+}
+
+class Treemap {
+	function generate() {
         // normalize - the Bruls algorithm assumes we're passing in areas that nicely fit into our 
         //             container box, this method takes our raw data and normalizes the data values into  
         //             area values so that this assumption is valid.
-        function normalize(data, area) {
+        var normalize = function (data, area) {
             var normalizeddata = [];
             var sum = sumArray(data);
             var multiplier = area / sum;
@@ -99,12 +119,12 @@ var Treemap = {};
                 normalizeddata[i] = data[i] * multiplier;
             }
             return normalizeddata;
-        }
+        };
 
         // treemapMultidimensional - takes multidimensional data (aka [[23,11],[11,32]] - nested array)
         //                           and recursively calls itself using treemapSingledimensional
         //                           to create a patchwork of treemaps and merge them
-        function treemapMultidimensional(data, width, height, xoffset, yoffset) {
+        var treemapMultidimensional = function(data, width, height, xoffset, yoffset) {
             xoffset = (typeof xoffset === "undefined") ? 0 : xoffset;
             yoffset = (typeof yoffset === "undefined") ? 0 : yoffset;
             
@@ -124,27 +144,26 @@ var Treemap = {};
                 }
             } else {
                 results = treemapSingledimensional(data,width,height, xoffset, yoffset);
-            }
+            };
             return results;
-        }
-
-
+        };
 
         // treemapSingledimensional - simple wrapper around squarify
-        function treemapSingledimensional(data, width, height, xoffset, yoffset) {
+        var treemapSingledimensional = function(data, width, height, xoffset, yoffset) {
             xoffset = (typeof xoffset === "undefined") ? 0 : xoffset;
             yoffset = (typeof yoffset === "undefined") ? 0 : yoffset;
 
             var rawtreemap = squarify(normalize(data, width * height), [], new Container(xoffset, yoffset, width, height), []);
             return flattenTreemap(rawtreemap);
-        }
+        };
 
         // flattenTreemap - squarify implementation returns an array of arrays of coordinates
         //                  because we have a new array everytime we switch to building a new row
         //                  this converts it into an array of coordinates.
-        function flattenTreemap(rawtreemap) {
+        var flattenTreemap = function(rawtreemap) {
             var flattreemap = [];
-            var i, j;
+            var i;
+            var j;
 
             for (i = 0; i < rawtreemap.length; i++) {
                 for (j = 0; j < rawtreemap[i].length; j++) {
@@ -152,12 +171,12 @@ var Treemap = {};
                 }
             }
             return flattreemap;
-        }
+        };
 
         // squarify  - as per the Bruls paper 
         //             plus coordinates stack and containers so we get 
         //             usable data out of it 
-        function squarify(data, currentrow, container, stack) {
+        var squarify = function(data, currentrow, container, stack) {
             var length;
             var nextdatapoint;
             var newcontainer;
@@ -179,11 +198,11 @@ var Treemap = {};
                 squarify(data, [], newcontainer, stack);
             }
             return stack;
-        }
+        };
 
         // improveRatio - implements the worse calculation and comparision as given in Bruls
         //                (note the error in the original paper; fixed here) 
-        function improvesRatio(currentrow, nextnode, length) {
+        var improvesRatio = function(currentrow, nextnode, length) {
             var newrow; 
 
             if (currentrow.length === 0) {
@@ -199,36 +218,26 @@ var Treemap = {};
             // the pseudocode in the Bruls paper has the direction of the comparison
             // wrong, this is the correct one.
             return currentratio >= newratio; 
-        }
+        };
 
         // calculateRatio - calculates the maximum width to height ratio of the
         //                  boxes in this row
-        function calculateRatio(row, length) {
+        var calculateRatio = function(row, length) {
             var min = Math.min.apply(Math, row);
             var max = Math.max.apply(Math, row);
             var sum = sumArray(row);
             return Math.max(Math.pow(length, 2) * max / Math.pow(sum, 2), Math.pow(sum, 2) / (Math.pow(length, 2) * min));
-        }
+        };
 
         // isArray - checks if arr is an array
-        function isArray(arr) {
+        var isArray = function(arr) {
             return arr && arr.constructor === Array; 
-        }
-
-        // sumArray - sums a single dimensional array 
-        function sumArray(arr) {
-            var sum = 0;
-            var i;
-
-            for (i = 0; i < arr.length; i++) {
-                sum += arr[i];
-            }
-            return sum;
-        }
+        };
 
         // sumMultidimensionalArray - sums the values in a nested array (aka [[0,1],[[2,3]]])
-        function sumMultidimensionalArray(arr) {
-            var i, total = 0;
+        var sumMultidimensionalArray = function(arr) {
+            var i;
+            var total = 0;
 
             if(isArray(arr[0])) {
                 for(i=0; i<arr.length; i++) {
@@ -238,8 +247,9 @@ var Treemap = {};
                 total = sumArray(arr);
             }
             return total;
-        }
+        };
 
         return treemapMultidimensional; 
-    }();
-})();
+    }
+
+}
