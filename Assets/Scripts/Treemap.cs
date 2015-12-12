@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-// Slice calculation
-
 public class Treemap : MonoBehaviour {
+
+	// Slice calculation
 
 	public Slice<T> GetSlice<T>(IEnumerable<Element<T>> elements, float totalSize, float sliceWidth) {                 
 		if (!elements.Any()) 
@@ -125,52 +125,42 @@ public class Treemap : MonoBehaviour {
 	}
 
 
-	// Drawing the rectangles in WinForm
+	// Drawing the rectangles in Unity
+	public void DrawTreemap<T>(IEnumerable<SliceRectangle<T>> rectangles/*, int width,  int height*/) {
+		foreach (var r in rectangles) {
+			var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			var scalePos = 0.02f;
+			var scalePadding = 0.9f;
 
-	public void DrawTreemap<T>(IEnumerable<SliceRectangle<T>> rectangles, int width,  int height) {
-//		var font = new Font("Arial", 8 );
+			var fullWidth = r.Width * scalePos;
+			var fullHeight = r.Height * scalePos;
 
-//		var bmp = new Bitmap(width, height);
-//		var gfx = Graphics.FromImage(bmp);
+			var x = r.X * scalePos + fullWidth / 2;
+			var z = r.Y * scalePos + fullHeight / 2;
 
-//		gfx.FillRectangle(Brushes.Blue, new RectangleF(0, 0, width, height));
+			cube.transform.position = new Vector3(x, 0.5f, z);
+			cube.transform.localScale = new Vector3(fullWidth * scalePadding, 1, fullHeight * scalePadding);
+		}
 
-//		foreach (var r in rectangles)
-//		{
-//			gfx.DrawRectangle(Pens.Black, 
-//				new Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1));
-//
-//			gfx.DrawString(r.Slice.Elements.First().Object.ToString(), font, 
-//				Brushes.White, r.X, r.Y);
-//		}
-
-//		var form = new Form() { AutoSize = true };
-//		form.Controls.Add(new PictureBox()
-//			{ Width = width, Height = height, Image = bmp });
-//		form.ShowDialog();
 	}
 
-
-	// And finally to generate a Treemap in LinqPad
-
 	void Start() {
-		Debug.Log("Start Treemap");
-
 		const int Width = 400;
 		const int Height = 300;
 		const float MinSliceRatio = 0.35f;
 
-		var elements = new[] { 24, 45, 32, 87, 34, 58, 10, 4, 5, 9, 52, 34 }
+		var elements = new[] 
+		    { 24, 45, 32, 87, 34, 58, 10, 4, 5, 9, 52, 34 }
+//			{5, 5, 5, 5}
 			.Select (x => new Element<string> { Object = x.ToString(), Value = x })
 			.OrderByDescending (x => x.Value)
 			.ToList();
 
-		var slice = GetSlice(elements, 1, MinSliceRatio);//.Dump("Slices");
+		var slice = GetSlice(elements, 1, MinSliceRatio);
 
 		var rectangles = GetRectangles(slice, Width, Height)
-			.ToList();//.Dump("Rectangles");
-		Debug.Log(rectangles.Count);
+			.ToList();
 
-		DrawTreemap(rectangles, Width, Height);
+		DrawTreemap(rectangles/*, Width, Height*/);
 	}
 }
