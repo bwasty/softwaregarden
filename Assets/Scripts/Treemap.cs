@@ -145,22 +145,39 @@ public class Treemap : MonoBehaviour {
 	}
 
 	void Start() {
+		test();
+
+	}
+
+	void test() {
+		// test with the data from the original blog post
 		const int Width = 400;
 		const int Height = 300;
 		const float MinSliceRatio = 0.35f;
 
+		var t = Time.realtimeSinceStartup;
+
 		var elements = new[] 
-		    { 24, 45, 32, 87, 34, 58, 10, 4, 5, 9, 52, 34 }
-//			{5, 5, 5, 5}
+		{ 24, 45, 32, 87, 34, 58, 10, 4, 5, 9, 52, 34 }
+			//			{5, 5, 5, 5}
 			.Select (x => new Element<string> { Object = x.ToString(), Value = x })
 			.OrderByDescending (x => x.Value)
 			.ToList();
 
 		var slice = GetSlice(elements, 1, MinSliceRatio);
 
-		var rectangles = GetRectangles(slice, Width, Height)
-			.ToList();
+		var rectangles = GetRectangles(slice, Width, Height).ToList();
+
+		logTime(t);
+		t = Time.realtimeSinceStartup;
 
 		DrawTreemap(rectangles/*, Width, Height*/);
+
+		logTime(t);
+	}
+
+	void logTime(float start) {
+		Debug.Log(((Time.realtimeSinceStartup - start) * 1000).ToString() + " ms");
 	}
 }
+
