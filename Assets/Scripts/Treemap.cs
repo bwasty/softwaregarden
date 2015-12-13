@@ -9,7 +9,7 @@ public class Treemap : MonoBehaviour {
 
 	// Slice calculation
 
-	public Slice<T> GetSlice<T>(IEnumerable<Element<T>> elements, float totalSize, float sliceWidth) {                 
+	public static Slice<T> GetSlice<T>(IEnumerable<Element<T>> elements, float totalSize, float sliceWidth) {                 
 		if (!elements.Any()) 
 			return null;
 		if (elements.Count() == 1) 
@@ -27,7 +27,7 @@ public class Treemap : MonoBehaviour {
 		};
 	}
 
-	private SliceResult<T> GetElementsForSlice<T>(IEnumerable<Element<T>> elements,	float sliceWidth) {
+	private static SliceResult<T> GetElementsForSlice<T>(IEnumerable<Element<T>> elements,	float sliceWidth) {
 		var elementsInSlice = new List<Element<T>>();
 		var remainingElements = new List<Element<T>>();
 		float current = 0;
@@ -70,7 +70,7 @@ public class Treemap : MonoBehaviour {
 
 	// Generating rectangles using leaf slice (slice with only one element in it)
 
-	public IEnumerable<SliceRectangle<T>> GetRectangles<T>(Slice<T> slice, int width, int height) {
+	public static IEnumerable<SliceRectangle<T>> GetRectangles<T>(Slice<T> slice, int width, int height) {
 		var area = new SliceRectangle<T> { Slice = slice, Width = width, Height = height };
 
 		foreach (var rect in GetRectangles(area)) {
@@ -82,7 +82,7 @@ public class Treemap : MonoBehaviour {
 		}
 	}
 
-	private IEnumerable<SliceRectangle<T>> GetRectangles<T>(SliceRectangle<T> sliceRectangle) {
+	private static IEnumerable<SliceRectangle<T>> GetRectangles<T>(SliceRectangle<T> sliceRectangle) {
 		var isHorizontalSplit = sliceRectangle.Width >= sliceRectangle.Height;
 		var currentPos = 0;
 		foreach (var subSlice in sliceRectangle.Slice.SubSlices) {
@@ -126,9 +126,13 @@ public class Treemap : MonoBehaviour {
 
 
 	// Drawing the rectangles in Unity
-	public void DrawTreemap<T>(IEnumerable<SliceRectangle<T>> rectangles/*, int width,  int height*/) {
+	public    void DrawTreemap<T>(IEnumerable<SliceRectangle<T>> rectangles/*, int width,  int height*/) {
 		foreach (var r in rectangles) {
-			var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+//			var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+			var codenode = Instantiate(Resources.Load("CodeNode")) as GameObject;
+			var cube = codenode;
+
 			var scalePos = 0.02f;
 			var scalePadding = 0.9f;
 
@@ -144,8 +148,10 @@ public class Treemap : MonoBehaviour {
 
 	}
 
+//	public static void 
+
 	void Start() {
-		test();
+		//test();
 
 	}
 
@@ -158,8 +164,9 @@ public class Treemap : MonoBehaviour {
 		var t = Time.realtimeSinceStartup;
 
 		var elements = new[] 
-		{ 24, 45, 32, 87, 34, 58, 10, 4, 5, 9, 52, 34 }
+//		{ 24, 45, 32, 87, 34, 58, 10, 4, 5, 9, 52, 34 }
 			//			{5, 5, 5, 5}
+		{1, 1}
 			.Select (x => new Element<string> { Object = x.ToString(), Value = x })
 			.OrderByDescending (x => x.Value)
 			.ToList();

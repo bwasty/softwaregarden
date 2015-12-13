@@ -89,6 +89,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startHeight: 0.25
   maxHeight: 4
+  thresholdGreen: 0.5
   thresholdYellow: 1
   thresholdRed: 2
   colorBlue: {r: 0, g: 0, b: 1, a: 1}
@@ -96,6 +97,7 @@ MonoBehaviour:
   colorYellow: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   colorRed: {r: 1, g: 0, b: 0, a: 1}
   colorDead: {r: 0, g: 0, b: 0, a: 1}
+  growthRate: 0.1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
