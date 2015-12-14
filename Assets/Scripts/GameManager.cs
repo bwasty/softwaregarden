@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour {
 
 	public Text statsText;
 	public Text gameOverText;
-	public int maxNodes = 64;
+//	public int maxNodes = 512;
 	public int maxDead = 8;
 
 	public bool gameRunning = true;

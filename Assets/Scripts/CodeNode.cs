@@ -82,7 +82,7 @@ public class CodeNode : MonoBehaviour {
 	}
 
 	void OnMouseDown() {
-		if (!manager.gameRunning || manager.nodes.Count > manager.maxNodes)
+		if (!manager.gameRunning /*|| manager.nodes.Count > manager.maxNodes*/)
 			return;
 
 //		if (height > thresholdYellow && height < maxHeight)
