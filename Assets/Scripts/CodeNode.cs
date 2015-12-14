@@ -19,7 +19,8 @@ public class CodeNode : MonoBehaviour {
 	public Color colorRed = Color.red;
 	public Color colorDead = Color.black;
 
-	public float growthRate = 0.1f; // per second
+	public float baseGrowthRate = 0.1f; // per second
+	public float growthRate;
 
 //	public float startArea = 100;
 //	public float Area {get; set;}
@@ -47,6 +48,7 @@ public class CodeNode : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Height = startHeight;
+		growthRate = baseGrowthRate * Random.Range(0.8f, 1.3f);
 //		Area = startArea;
 	}
 
@@ -83,8 +85,8 @@ public class CodeNode : MonoBehaviour {
 		if (!manager.gameRunning || manager.nodes.Count > manager.maxNodes)
 			return;
 
-		if (height > thresholdYellow && height < maxHeight)
-			splitNode();
+//		if (height > thresholdYellow && height < maxHeight)
+		splitNode();
 	}
 	
 	// Update is called once per frame

@@ -100,7 +100,8 @@ MonoBehaviour:
   colorOrange: {r: 0.95686275, g: 0.69803923, b: 0.36078432, a: 0.60784316}
   colorRed: {r: 1, g: 0, b: 0, a: 1}
   colorDead: {r: 0, g: 0, b: 0, a: 1}
-  growthRate: 0.4
+  baseGrowthRate: 0.15
+  growthRate: 0.1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -138,7 +139,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: growthRate
-      value: 0.4
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: colorBlue.r
@@ -175,6 +176,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: thresholdRed
       value: 3.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: baseGrowthRate
+      value: 0.15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

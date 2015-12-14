@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour {
 	public Text statsText;
 	public Text gameOverText;
 	public int maxNodes = 64;
-	public int maxDead = 5;
+	public int maxDead = 8;
 
 	public bool gameRunning = true;
 
@@ -34,10 +34,10 @@ public class GameManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown("f")) {
-			addNode();
-			layoutNodes();
-		}
+//		if (Input.GetKeyDown("f")) {
+//			addNode();
+//			layoutNodes();
+//		}
 
 		updateScore();
 	}
@@ -112,6 +112,7 @@ public class GameManager : MonoBehaviour {
 
 		if (numDead > maxDead) {
 			gameRunning = false;
+//			gameOverText.text += string.Format("\nFinal Score: {0} Lines of Code");
 			gameOverText.gameObject.SetActive(true);
 		}
 
