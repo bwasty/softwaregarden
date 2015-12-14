@@ -87,17 +87,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b826fafcfae4045ea8352961f4b33ef1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHeight: 0.15
+  manager: {fileID: 0}
+  startHeight: 0.25
   maxHeight: 4
   thresholdGreen: 0.5
-  thresholdYellow: 1
-  thresholdRed: 2
-  colorBlue: {r: 0, g: 0, b: 1, a: 1}
-  colorGreen: {r: 0.0655277, g: 0.74264705, b: 0.23830977, a: 1}
-  colorYellow: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  thresholdYellow: 1.5
+  thresholdOrange: 2.5
+  thresholdRed: 3.75
+  colorBlue: {r: 0.23137255, g: 0.4509804, b: 0.6862745, a: 1}
+  colorGreen: {r: 0.58431375, g: 0.7058824, b: 0.2, a: 1}
+  colorYellow: {r: 0.97794116, g: 0.9168602, b: 0.471, a: 1}
+  colorOrange: {r: 0.95686275, g: 0.69803923, b: 0.36078432, a: 0.60784316}
   colorRed: {r: 1, g: 0, b: 0, a: 1}
   colorDead: {r: 0, g: 0, b: 0, a: 1}
-  growthRate: 0.1
+  growthRate: 0.4
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -119,23 +122,59 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: colorGreen.r
-      value: 0.0655277
+      value: 0.58431375
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: colorGreen.g
-      value: 0.74264705
+      value: 0.7058824
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: colorGreen.b
-      value: 0.23830977
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: startHeight
-      value: 0.15
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: growthRate
-      value: 0.88
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorBlue.r
+      value: 0.23137255
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorBlue.g
+      value: 0.4509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorBlue.b
+      value: 0.6862745
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorYellow.g
+      value: 0.9168602
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorYellow.b
+      value: 0.471
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colorYellow.r
+      value: 0.97794116
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: thresholdYellow
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: thresholdOrange
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: thresholdRed
+      value: 3.75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
