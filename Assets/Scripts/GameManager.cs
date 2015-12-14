@@ -7,12 +7,29 @@ using System.Linq;
 using System;
 
 public class GameManager : MonoBehaviour {
-	int counter = 0;
 
 	private List<CodeNode> nodes;
 	private UnityEngine.Object nodePrefab;
 
-//	private CodeNode templateNode;
+	// Use this for initialization
+	void Start () {
+		nodes = new List<CodeNode>();
+		nodePrefab = Resources.Load("CodeNode");
+
+		for (int i=0; i<4; ++i) {
+			addNode();
+		}
+		layoutNodes();
+	}
+
+	// Update is called once per frame
+	void Update () {
+		if (Input.GetKeyDown("f")) {
+			addNode();
+			layoutNodes();
+		}
+
+	}
 
 	void addNode() {
 		var nodePrefabInst = Instantiate(nodePrefab) as GameObject;
@@ -21,8 +38,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void layoutNodes() {
-		var elements = //new[]
-			//			{node, node2}
+		var elements = 
 			nodes
 			.Select(x => new Treemap.Element<CodeNode> { Object = x, Value = 1})
 			.ToList();
@@ -50,28 +66,5 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	// Use this for initialization
-	void Start () {
-		nodes = new List<CodeNode>();
 
-		nodePrefab = Resources.Load("CodeNode");
-
-		for (int i=0; i<4; ++i) {
-			addNode();
-		}
-
-//		nodePrefabInst = Instantiate(nodePrefab) as GameObject;
-//		node = nodePrefabInst.GetComponent<CodeNode>();
-//		nodes.Add(node);
-		layoutNodes();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (Input.GetKeyDown("f")) {
-			addNode();
-			layoutNodes();
-		}
-	
-	}
 }
