@@ -9,12 +9,17 @@ using System;
 
 public class GameManager : MonoBehaviour {
 
-	private List<CodeNode> nodes;
+	public List<CodeNode> nodes;
 	private UnityEngine.Object nodePrefab;
 
 	private int locScore;
 
 	public Text statsText;
+	public Text gameOverText;
+	public int maxNodes = 64;
+	public int maxDead = 5;
+
+	public bool gameRunning = true;
 
 	// Use this for initialization
 	void Start () {
@@ -37,14 +42,20 @@ public class GameManager : MonoBehaviour {
 		updateScore();
 	}
 
-	void addNode() {
-		var nodePrefabInst = Instantiate(nodePrefab) as GameObject;
-		var node = nodePrefabInst.GetComponent<CodeNode>();
-//		nodes.Add(node);
-		nodes.Insert(nodes.Count/2, node);
+	public void addNode(CodeNode node=null, CodeNode after=null) {
+		if (!node) {
+			var nodePrefabInst = Instantiate(nodePrefab) as GameObject;
+			node = nodePrefabInst.GetComponent<CodeNode>();
+			node.manager = this;
+		}
+
+		if (after)
+			nodes.Insert(nodes.IndexOf(after) + 1, node);
+		else
+			nodes.Add(node);
 	}
 
-	void layoutNodes() {
+	public void layoutNodes() {
 		const int mapSize = 150;
 		const float scalePos = 0.1f;
 		const float scalePadding = 0.85f;
@@ -77,16 +88,34 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void updateScore() {
+		if (!gameRunning)
+			return;
+
 		const int locPerHeight = 10;
 
 		locScore = 0;
 		var locRate = 0;
+		var numDead = 0;
+		var locLost = 0;
 		foreach (var node in nodes) {
-			locScore += (int)(node.Height * locPerHeight);
-			locRate += (int)(node.growthRate * locPerHeight);
+			var loc = (int)(node.Height * locPerHeight);
+
+			if (node.Height == node.maxHeight) {
+				++numDead;
+				locLost += loc;
+			} else {
+				locScore += loc;
+				locRate += (int)(node.growthRate * locPerHeight);
+			}
+			 
 		}
 
-		statsText.text = string.Format("LOC: {0}\nLOC/sec: {1}", locScore, locRate);
+		if (numDead > maxDead) {
+			gameRunning = false;
+			gameOverText.gameObject.SetActive(true);
+		}
+
+		statsText.text = string.Format("LOC: {0}\nLOC/sec: {1}\nLOC lost: {2}", locScore, locRate, locLost);
 	}
 
 }

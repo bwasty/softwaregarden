@@ -278,7 +278,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fe62c1aa1cf04080a63532ced25927e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nodes: []
   statsText: {fileID: 417926659}
+  gameOverText: {fileID: 1522052335}
+  maxNodes: 64
+  maxDead: 5
+  gameRunning: 1
 --- !u!114 &1212452235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,6 +370,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
+--- !u!114 &1522052335 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11473520, guid: f0036433f925841a8adf49df680747a3,
+    type: 2}
+  m_PrefabInternal: {fileID: 1768415496}
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1001 &1768415496
 Prefab:
   m_ObjectHideFlags: 0
@@ -443,6 +454,42 @@ Prefab:
     - target: {fileID: 22462092, guid: f0036433f925841a8adf49df680747a3, type: 2}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 128168, guid: f0036433f925841a8adf49df680747a3, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11473520, guid: f0036433f925841a8adf49df680747a3, type: 2}
+      propertyPath: m_Text
+      value: You're fired!
+      objectReference: {fileID: 0}
+    - target: {fileID: 22492134, guid: f0036433f925841a8adf49df680747a3, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 203002.61
+      objectReference: {fileID: 0}
+    - target: {fileID: 22492134, guid: f0036433f925841a8adf49df680747a3, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: 28.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11473520, guid: f0036433f925841a8adf49df680747a3, type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 54
+      objectReference: {fileID: 0}
+    - target: {fileID: 11473520, guid: f0036433f925841a8adf49df680747a3, type: 2}
+      propertyPath: m_FontData.m_MaxSize
+      value: 62
+      objectReference: {fileID: 0}
+    - target: {fileID: 11473520, guid: f0036433f925841a8adf49df680747a3, type: 2}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11473520, guid: f0036433f925841a8adf49df680747a3, type: 2}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11473520, guid: f0036433f925841a8adf49df680747a3, type: 2}
+      propertyPath: m_FontData.m_FontStyle
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f0036433f925841a8adf49df680747a3, type: 2}
