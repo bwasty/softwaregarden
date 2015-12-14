@@ -40,7 +40,8 @@ public class GameManager : MonoBehaviour {
 	void addNode() {
 		var nodePrefabInst = Instantiate(nodePrefab) as GameObject;
 		var node = nodePrefabInst.GetComponent<CodeNode>();
-		nodes.Add(node);
+//		nodes.Add(node);
+		nodes.Insert(nodes.Count/2, node);
 	}
 
 	void layoutNodes() {
@@ -48,9 +49,11 @@ public class GameManager : MonoBehaviour {
 		const float scalePos = 0.1f;
 		const float scalePadding = 0.85f;
 
-		var elements = 
-			nodes
-			.Select(x => new Treemap.Element<CodeNode> { Object = x, Value = 1})
+		// HACK: removing or reversing the ordering causes Unity to crash (infinite recursion in treemap layout?),
+		// so to get a defined order we add i/1000 to the default weight of 1.
+		var elements = nodes
+			.Select((x, i) => new Treemap.Element<CodeNode> { Object = x, Value = 1+i/1000})
+			.OrderByDescending (x => x.Value)
 			.ToList();
 
 		var slice = Treemap.GetSlice(elements, 1, 0.35f); // TODO: minSliceRatio
