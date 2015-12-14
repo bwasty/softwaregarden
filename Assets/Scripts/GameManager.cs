@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Linq;
@@ -10,6 +11,10 @@ public class GameManager : MonoBehaviour {
 
 	private List<CodeNode> nodes;
 	private UnityEngine.Object nodePrefab;
+
+	private int locScore;
+
+	public Text statsText;
 
 	// Use this for initialization
 	void Start () {
@@ -29,6 +34,7 @@ public class GameManager : MonoBehaviour {
 			layoutNodes();
 		}
 
+		updateScore();
 	}
 
 	void addNode() {
@@ -67,5 +73,17 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	void updateScore() {
+		const int locPerHeight = 10;
+
+		locScore = 0;
+		var locRate = 0;
+		foreach (var node in nodes) {
+			locScore += (int)(node.Height * locPerHeight);
+			locRate += (int)(node.growthRate * locPerHeight);
+		}
+
+		statsText.text = string.Format("LOC: {0}\nLOC/sec: {1}", locScore, locRate);
+	}
 
 }
